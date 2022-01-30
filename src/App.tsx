@@ -1,12 +1,17 @@
+import { Button } from '@mui/material';
 import React, { useEffect } from 'react';
-
-import './App.css';
-import cityApi from './api/cityApi';
-import studentApi from './api/studentApi';
-import { all } from 'redux-saga/effects';
 import { Route, Switch } from 'react-router-dom';
+import cityApi from './api/cityApi';
+import './App.css';
+import { useAppDispatch } from './app/hooks';
+import { NotFound, PrivateRoute } from './components/Common';
+import { AdminLayout } from './components/Layout';
+import { authActions } from './features/auth/authSlice';
+import LoginPage from './features/auth/LoginPage';
+// import { LoginPage } from './features/auth/LoginPage';
 
 function App() {
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     cityApi.getAll().then(response => console.log(response))
@@ -19,12 +24,18 @@ function App() {
 
   return (
     <div className="App">
+      <h1>REdux Saga</h1>
+      <Button variant="contained" 
+      onClick = {() => dispatch(authActions.logout())}>LogOut</Button>
       <Switch>
         <Route path='/login'>
-
+          <LoginPage  />
         </Route>
-        <Route path='/admin'>
-
+        <PrivateRoute path='/admin'>
+          <AdminLayout  />
+        </PrivateRoute>
+        <Route >
+          <NotFound  />
         </Route>
       </Switch>
 
